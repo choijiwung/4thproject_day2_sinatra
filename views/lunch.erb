@@ -1,0 +1,16 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+    <title> 점심메뉴 추천</title>
+    </head>
+<body>
+<h1>점심 메뉴 추천</h1>
+<p>당신이 먹을 점심은 : <%= @menu%></p>
+<!---->
+<img src="<%=@photos[@menu]%>"
+@menu 랜덤으로 추천된 메뉴가 저장되어 있다.
+@menu에 해당되는 사진을 저장해두고,
+@menu가 선택될 때 마다 @menu와 함께 사진을 보여준다.
+
+</body>
+</html>
