@@ -2,6 +2,7 @@ require 'sinatra'
 require 'nokogiri'
 require 'httparty'
 require 'uri'
+require 'date'
 
 get '/' do
     send_file 'index.html'
@@ -34,7 +35,6 @@ get '/lol' do
 end
 
 get '/search' do
-    
     url = "http://www.op.gg/summoner/userName="
     @id = params[:userName]
     keyword = URI.encode(@id)
@@ -42,7 +42,22 @@ get '/search' do
     text = Nokogiri::HTML(res.body)
     @win = text.css('#SummonerLayoutContent > div.tabItem.Content.SummonerLayoutContent.summonerLayout-summary > div.SideContent > div.TierBox.Box > div.SummonerRatingMedium > div.TierRankInfo > div.TierInfo > span.WinLose > span.wins')
     @lose = text.css('#SummonerLayoutContent > div.tabItem.Content.SummonerLayoutContent.summonerLayout-summary > div.SideContent > div.TierBox.Box > div.SummonerRatingMedium > div.TierRankInfo > div.TierInfo > span.WinLose > span.losses')
-erb :search
+    # File.open("log.txt" , 'a+') do |f|
+    #     f.write("#{@id}, #{@win.text}, #{@lose.text}," + Time.now.to_s + "\n")
+    CSV.open('log.csv', 'a+') do |csv|
+        csv << [@id,@win.text,@lose.text,Time.now.to_s]
+    end
+     erb :search
+end
+
+get '/log' do
+    @log = []
+    @rownum = 0
+    CSV.foreach('log.csv') do |row|
+        @log << row
+        @rownum += 1
+    end
+    erb :log
 end
 
 get '/lotto' do
